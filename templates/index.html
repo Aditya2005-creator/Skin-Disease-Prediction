@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Disease Prediction System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            margin: 2rem auto;
+            padding: 2rem;
+            max-width: 800px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .upload-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 2px dashed #dee2e6;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-section:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .upload-area {
+            text-align: center;
+            cursor: pointer;
+            padding: 2rem;
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            margin-top: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            display: none;
+        }
+        
+        .result-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .prediction-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .disease-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .confidence-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-stethoscope me-2"></i>
+                Skin Disease Prediction System
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/predict">Predict</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/ml-details">ML Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tech-specs">Tech Specs</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="main-container">
+            <!-- Header Section -->
+            <div class="header">
+                <h1><i class="fas fa-stethoscope"></i> Skin Disease Prediction System</h1>
+                <p>Upload an image of a skin condition to get an AI-powered prediction and analysis</p>
+            </div>
+            
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <div class="upload-area" onclick="document.getElementById('imageInput').click()">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h4>Upload Skin Image</h4>
+                    <p>Click here or drag and drop your image (JPG, PNG, JPEG)</p>
+                    <button class="upload-btn">
+                        <i class="fas fa-plus"></i> Choose Image
+                    </button>
+                    <input type="file" id="imageInput" class="file-input" accept="image/*" onchange="handleFileSelect(event)">
+                </div>
+                <div id="imagePreview" style="display: none;">
+                    <img id="previewImg" class="image-preview" alt="Preview">
+                </div>
+            </div>
+            
+            <!-- Loading Section -->
+            <div id="loadingSection" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <h5>Analyzing your image...</h5>
+                <p>Please wait while our AI model processes your skin image</p>
+            </div>
+            
+            <!-- Result Section -->
+            <div id="resultSection" class="result-section">
+                <h3><i class="fas fa-chart-line"></i> Prediction Results</h3>
+                <div class="prediction-card">
+                    <div class="disease-name" id="diseaseName"></div>
+                    <div class="confidence-info">
+                        <small class="text-muted">Confidence Level:</small>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="confidenceText"></span>
+                            <span id="confidencePercent"></span>
+                        </div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidenceBar"></div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle"></i>
+                            This is an AI-powered prediction for educational purposes only. 
+                            Please consult a healthcare professional for medical diagnosis.
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Error Alert -->
+            <div id="errorAlert" class="alert alert-danger" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="errorMessage"></span>
+            </div>
+            
+            <!-- Footer -->
+            <div class="footer">
+                <p>&copy; 2024 Skin Disease Prediction System | Built with Flask & TensorFlow</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let selectedFile = null;
+        
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedFile = file;
+                showImagePreview(file);
+                hideResults();
+                hideError();
+            }
+        }
+        
+        function showImagePreview(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+                
+                // Auto-predict after showing preview
+                setTimeout(() => {
+                    predictDisease();
+                }, 500);
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function predictDisease() {
+            if (!selectedFile) {
+                showError('Please select an image file first.');
+                return;
+            }
+            
+            // Show loading
+            showLoading();
+            hideResults();
+            hideError();
+            
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('image', selectedFile);
+            
+            // Make prediction request
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                
+                if (data.success) {
+                    showResults(data.disease, data.confidence);
+                } else {
+                    showError(data.error || 'Prediction failed. Please try again.');
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                console.error('Error:', error);
+                showError('An error occurred while processing your image. Please try again.');
+            });
+        }
+        
+        function showLoading() {
+            document.getElementById('loadingSection').style.display = 'block';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingSection').style.display = 'none';
+        }
+        
+        function showResults(disease, confidence) {
+            const resultSection = document.getElementById('resultSection');
+            const diseaseName = document.getElementById('diseaseName');
+            const confidenceText = document.getElementById('confidenceText');
+            const confidencePercent = document.getElementById('confidencePercent');
+            const confidenceBar = document.getElementById('confidenceBar');
+            
+            diseaseName.textContent = disease;
+            confidenceText.textContent = 'Confidence Level';
+            confidencePercent.textContent = `${confidence}%`;
+            confidenceBar.style.width = `${confidence}%`;
+            
+            resultSection.classList.add('show');
+            
+            // Scroll to results
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function hideResults() {
+            document.getElementById('resultSection').classList.remove('show');
+        }
+        
+        function showError(message) {
+            const errorAlert = document.getElementById('errorAlert');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            errorMessage.textContent = message;
+            errorAlert.style.display = 'block';
+            
+            // Auto-hide error after 5 seconds
+            setTimeout(() => {
+                hideError();
+            }, 5000);
+        }
+        
+        function hideError() {
+            document.getElementById('errorAlert').style.display = 'none';
+        }
+        
+        // Drag and drop functionality
+        const uploadArea = document.querySelector('.upload-area');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = '#f0f4ff';
+            uploadArea.style.borderColor = '#667eea';
+        });
+        
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = '#f8f9fa';
+            uploadArea.style.borderColor = '#dee2e6';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = '#f8f9fa';
+            uploadArea.style.borderColor = '#dee2e6';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('image/')) {
+                    selectedFile = file;
+                    showImagePreview(file);
+                    hideResults();
+                    hideError();
+                } else {
+                    showError('Please select a valid image file.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

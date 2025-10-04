@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning Details - Skin Disease Prediction System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: #333 !important;
+        }
+        
+        .nav-link {
+            color: #333 !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #667eea !important;
+        }
+        
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            margin: 2rem auto;
+            padding: 3rem;
+            max-width: 1200px;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .subsection-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #667eea;
+            margin: 2rem 0 1rem 0;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+        
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .model-architecture {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .layer-item {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .layer-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .layer-details {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .metric-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            margin: 1rem 0;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        
+        .process-step {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .step-description {
+            color: #666;
+            margin: 0;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-list li:before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        
+        .alert-custom {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-stethoscope me-2"></i>
+                Skin Disease Prediction System
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/predict">Predict</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/ml-details">ML Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tech-specs">Tech Specs</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="main-content">
+            <h1 class="section-title">
+                <i class="fas fa-brain"></i>
+                Machine Learning Architecture
+            </h1>
+
+            <!-- Overview -->
+            <div class="info-card">
+                <h2 class="subsection-title">Overview</h2>
+                <p class="lead">
+                    Our skin disease prediction system uses a <span class="highlight">Convolutional Neural Network (CNN)</span> 
+                    specifically designed for medical image classification. The model is trained to identify 15 different 
+                    skin conditions with high accuracy and fast inference times.
+                </p>
+                <p>
+                    The system leverages deep learning techniques to automatically extract features from skin images 
+                    and classify them into different disease categories. This approach eliminates the need for manual 
+                    feature engineering and provides robust performance across various skin types and conditions.
+                </p>
+            </div>
+
+            <!-- Model Architecture -->
+            <div class="model-architecture">
+                <h2 class="subsection-title">Model Architecture</h2>
+                <p>Our CNN model consists of multiple convolutional layers with batch normalization, dropout, and pooling operations:</p>
+                
+                <div class="layer-item">
+                    <div class="layer-name">Input Layer</div>
+                    <div class="layer-details">224×224×3 RGB images (resized and normalized)</div>
+                </div>
+                
+                <div class="layer-item">
+                    <div class="layer-name">Convolutional Block 1</div>
+                    <div class="layer-details">32 filters (3×3), BatchNorm, ReLU, MaxPool (2×2), Dropout (0.25)</div>
+                </div>
+                
+                <div class="layer-item">
+                    <div class="layer-name">Convolutional Block 2</div>
+                    <div class="layer-details">64 filters (3×3), BatchNorm, ReLU, MaxPool (2×2), Dropout (0.25)</div>
+                </div>
+                
+                <div class="layer-item">
+                    <div class="layer-name">Convolutional Block 3</div>
+                    <div class="layer-details">128 filters (3×3), BatchNorm, ReLU, MaxPool (2×2), Dropout (0.25)</div>
+                </div>
+                
+                <div class="layer-item">
+                    <div class="layer-name">Convolutional Block 4</div>
+                    <div class="layer-details">256 filters (3×3), BatchNorm, ReLU, MaxPool (2×2), Dropout (0.25)</div>
+                </div>
+                
+                <div class="layer-item">
+                    <div class="layer-name">Global Average Pooling</div>
+                    <div class="layer-details">Reduces spatial dimensions while preserving channel information</div>
+                </div>
+                
+                <div class="layer-item">
+                    <div class="layer-name">Dense Layers</div>
+                    <div class="layer-details">512 → 256 neurons with BatchNorm and Dropout (0.5, 0.3)</div>
+                </div>
+                
+                <div class="layer-item">
+                    <div class="layer-name">Output Layer</div>
+                    <div class="layer-details">15 neurons with Softmax activation for 15 disease classes</div>
+                </div>
+            </div>
+
+            <!-- Model Performance -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-value">73%</div>
+                        <div class="metric-label">Test Accuracy</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-value">1.4M</div>
+                        <div class="metric-label">Parameters</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-value">5.5MB</div>
+                        <div class="metric-label">Model Size</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-value">&lt;200ms</div>
+                        <div class="metric-label">Inference Time</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Process -->
+            <div class="info-card">
+                <h2 class="subsection-title">Training Process</h2>
+                
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Data Generation</div>
+                        <div class="step-description">
+                            Created synthetic training data with 1,800 training samples and 375 test samples 
+                            across 15 disease categories with realistic skin patterns and variations.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Data Augmentation</div>
+                        <div class="step-description">
+                            Applied rotation, scaling, brightness adjustment, and horizontal flipping 
+                            to increase dataset diversity and improve model generalization.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Model Training</div>
+                        <div class="step-description">
+                            Trained for 25 epochs with Adam optimizer, categorical crossentropy loss, 
+                            and callbacks for early stopping and learning rate reduction.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Validation & Testing</div>
+                        <div class="step-description">
+                            Used 20% of training data for validation and evaluated final performance 
+                            on held-out test set to ensure unbiased performance estimates.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Features -->
+            <div class="info-card">
+                <h2 class="subsection-title">Key ML Features</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="feature-list">
+                            <li>Batch Normalization for stable training</li>
+                            <li>Dropout layers to prevent overfitting</li>
+                            <li>Global Average Pooling for efficiency</li>
+                            <li>Softmax activation for probability output</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="feature-list">
+                            <li>Data augmentation for robustness</li>
+                            <li>Early stopping to prevent overfitting</li>
+                            <li>Learning rate scheduling</li>
+                            <li>Model checkpointing for best weights</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Implementation -->
+            <div class="info-card">
+                <h2 class="subsection-title">Technical Implementation</h2>
+                
+                <h4>Image Preprocessing Pipeline:</h4>
+                <div class="code-block">
+# Image preprocessing steps
+1. Load image and convert to RGB
+2. Resize to 224×224 pixels
+3. Normalize pixel values to [0, 1]
+4. Add batch dimension for model input
+5. Pass through CNN for prediction
+                </div>
+                
+                <h4>Model Compilation:</h4>
+                <div class="code-block">
+model.compile(
+    optimizer=Adam(learning_rate=0.001),
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
+                </div>
+                
+                <h4>Prediction Process:</h4>
+                <div class="code-block">
+# Get prediction probabilities
+predictions = model.predict(preprocessed_image)
+predicted_class = np.argmax(predictions[0])
+confidence = np.max(predictions[0]) * 100
+disease_name = DISEASE_CLASSES[predicted_class]
+                </div>
+            </div>
+
+            <!-- Limitations and Considerations -->
+            <div class="alert alert-custom">
+                <h4><i class="fas fa-exclamation-triangle me-2"></i>Important Limitations</h4>
+                <ul class="mb-0">
+                    <li><strong>Educational Purpose:</strong> This model is designed for educational and research purposes only</li>
+                    <li><strong>Not Medical Advice:</strong> Predictions should never replace professional medical diagnosis</li>
+                    <li><strong>Limited Dataset:</strong> Trained on synthetic data, not real medical images</li>
+                    <li><strong>Accuracy Limitations:</strong> 73% accuracy may not be sufficient for clinical use</li>
+                    <li><strong>Bias Considerations:</strong> Model performance may vary across different skin types</li>
+                </ul>
+            </div>
+
+            <!-- Future Improvements -->
+            <div class="info-card">
+                <h2 class="subsection-title">Future Improvements</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Data & Training:</h5>
+                        <ul>
+                            <li>Use real medical datasets with proper consent</li>
+                            <li>Implement transfer learning with pre-trained models</li>
+                            <li>Add more diverse skin types and conditions</li>
+                            <li>Implement ensemble methods for better accuracy</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Model Architecture:</h5>
+                        <ul>
+                            <li>Experiment with Vision Transformers (ViT)</li>
+                            <li>Implement attention mechanisms</li>
+                            <li>Add uncertainty quantification</li>
+                            <li>Optimize for mobile deployment</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-4" style="color: white;">
+        <p>&copy; 2024 Skin Disease Prediction System | Built with Flask & TensorFlow</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

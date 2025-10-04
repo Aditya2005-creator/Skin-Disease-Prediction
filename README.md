@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Skin Disease Prediction System
 
 A Flask-based web application that uses machine learning to predict skin diseases from uploaded images. The system employs a Convolutional Neural Network (CNN) to analyze skin images and provide predictions with confidence scores.
@@ -232,3 +233,7 @@ For issues and questions:
 ---
 
 **Built with ❤️ using Flask, TensorFlow, and modern web technologies**
+=======
+# Skin-Disease-Prediction
+Skin-Disease-Prediction
+>>>>>>> 84493f15fe3820269916f3b63b29bbde8ec77419
